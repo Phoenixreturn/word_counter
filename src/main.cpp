@@ -1,65 +1,33 @@
-﻿#include <windows.h>
-#include <iostream>
-#include <map> // A map will be used to count the words.
-#include <fstream> // Will be used to read from a file.
-#include <string> // The map's key value.
+﻿#include <iostream>
+#include <exception>
+#include "WordCounterUtils.h"
 using namespace std;
 
-
-//Will be used to print the map later.
-template <class KTy, class Ty>
-void PrintMap(map<KTy, Ty> map)
-{
-	typedef std::map<KTy, Ty>::iterator iterator;
-	for (iterator p = map.begin(); p != map.end(); p++)
-		cout << p->first << " - " << p->second << endl;
-}
-
-string ExePath() {
-	char buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, MAX_PATH);
-	string::size_type pos = string(buffer).find_last_of("\\/");
-	return string(buffer).substr(0, pos);
-}
+#define CUR_LOCALE "Russian"
 
 int main(void)
 {
-	static const char* fileName = "C:\\ABBA.txt";
-	cout << "my directory is " << ExePath() << "\n";
+	WordCounterUtils *counterUtils;
+	string path;
+	setlocale(LC_ALL, CUR_LOCALE);
+	cout << "Введите полный путь до файла: " << endl;
+	getline(cin, path);
+	try {
+		counterUtils = new WordCounterUtils(path);
+	}
+	catch (OpenFileException& myEx) {
+		cout << myEx.what() << endl;
+		int i;
+		cin >> i;
+		return EXIT_FAILURE;
+	}
+
+	if (counterUtils != NULL) {
+		counterUtils->PrintMap();
+	}
 
 	int i;
 	cin >> i;
-
-	// Will store the word and count.
-	map<string, unsigned int> wordsCount;
-	{
-		// Begin reading from file:
-		ifstream fileStream(fileName);
-
-		// Check if we've opened the file (as we should have).
-		if (fileStream.is_open())
-			while (fileStream.good())
-			{
-				// Store the next word in the file in a local variable.
-				string word;
-				fileStream >> word;
-
-				//Look if it's already there.
-				if (wordsCount.find(word) == wordsCount.end()) // Then we've encountered the word for a first time.
-					wordsCount[word] = 1; // Initialize it to 1.
-				else // Then we've already seen it before..
-					wordsCount[word]++; // Just increment it.
-			}
-		else  // We couldn't open the file. Report the error in the error stream.
-		{
-			cerr << "Couldn't open the file." << endl;
-			return EXIT_FAILURE;
-		}
-
-		// Print the words map.
-		PrintMap(wordsCount);
-	}
-	cin >> i;
-
+	delete counterUtils;
 	return EXIT_SUCCESS;
 }
