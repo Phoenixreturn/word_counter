@@ -4,6 +4,8 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Добавьте источник в исполняемый файл этого проекта.
-add_executable (word_counter "word_counter.cpp" "word_counter.h")
+add_executable(unit-test unit-test.cpp)
+target_link_libraries(unit-test gtest gmock_main)
+add_test(NAME example_test COMMAND unit-test)
 
 # TODO: Добавьте тесты и целевые объекты, если это необходимо.
