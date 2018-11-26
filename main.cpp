@@ -1,6 +1,6 @@
 ﻿#include <iostream>
 #include <exception>
-#include "WordCounterUtils.h"
+#include "src/WordCounterUtils.h"
 using namespace std;
 
 #define CUR_LOCALE "Russian"

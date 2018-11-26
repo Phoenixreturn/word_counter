@@ -29,6 +29,16 @@ void WordCounterUtils::PrintMap()
 		std::cout << p->first << " - " << p->second << std::endl;
 }
 
+int WordCounterUtils::wordOccurency(string word)
+{
+	if (wordsCount.count(word)) {
+		return wordsCount[word];
+	}
+	else {
+		return -1;
+	}
+}
+
 int WordCounterUtils::wordCount() {
 	return wordsCount.size();
 }

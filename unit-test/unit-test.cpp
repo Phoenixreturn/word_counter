@@ -1,54 +1,45 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
+#include <iostream>
+#include <string>
+#include <exception>
+#include "../src/WordCounterUtils.h"
 
 
-// Simple test, does not use gmock
-TEST(Dummy, foobar)
+std::string globalWord;
+WordCounterUtils *wordCounter;
+
+int main(int argc, char** argv) {
+	::testing::InitGoogleTest(&argc, argv);
+	if (argc == 2) {
+		globalWord = argv[1];
+		wordCounter = new WordCounterUtils(globalWord);
+	}
+	else {
+		return EXIT_FAILURE;
+	}   
+	//wordCounter = new WordCounterUtils("C:\\ABBA.txt");
+
+	return RUN_ALL_TESTS();
+}
+
+TEST(word_count, allWords)
 {
-    EXPECT_EQ(1, 1);
+    EXPECT_EQ(wordCounter->wordCount(), 3);
 }
 
 
-// Real class we want to mock
-class TeaBreak
+TEST(word_count, firstWord)
 {
-public:
-    virtual ~TeaBreak() {}
+	EXPECT_EQ(wordCounter->wordOccurency("my"), 12);
+}
 
-    // Return minutes taken to make the drinks
-    int morningTea()
-    {
-        return makeCoffee(true,  1) +
-               makeCoffee(false, 0.5) +
-               makeHerbalTea();
-    }
-
-private:
-    virtual int makeCoffee(bool milk, double sugars) = 0;
-    virtual int makeHerbalTea() = 0;
-};
-
-// Mock class
-class MockTeaBreak : public TeaBreak
+TEST(word_count, secondWord)
 {
-public:
-    MOCK_METHOD2(makeCoffee,    int(bool milk, double sugars));
-    MOCK_METHOD0(makeHerbalTea, int());
-};
+	EXPECT_EQ(wordCounter->wordOccurency("friend"), 3);
+}
 
-
-using ::testing::Return;
-using ::testing::_;
-
-// Mocked test
-TEST(TeaBreakTest, MorningTea)
+TEST(word_count, thirdWord)
 {
-    MockTeaBreak  teaBreak;
-    EXPECT_CALL(teaBreak, makeCoffee(_,_))
-        .WillOnce(Return(2))
-        .WillOnce(Return(1));
-    EXPECT_CALL(teaBreak, makeHerbalTea())
-        .WillOnce(Return(3));
-
-    EXPECT_LE(teaBreak.morningTea(), 6);
+	EXPECT_EQ(wordCounter->wordOccurency("hello"), 2);
 }

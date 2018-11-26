@@ -17,5 +17,6 @@ public:
 	// печать результатов подсчета
 	void PrintMap();	
 	int wordCount();
+	int wordOccurency(string word);
 };
 
